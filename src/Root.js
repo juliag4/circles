@@ -1,7 +1,8 @@
 let style = document.createElement('style');
 style.innerHTML = `
   .agario-root .header{
-    background-color: blue;
+    color: blue;
+    font-size: 50px;
   }
 `;
 document.body.appendChild(style);
