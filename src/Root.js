@@ -1,4 +1,4 @@
-.header{
+.root .header{
   background-color: blue;
 }
 
