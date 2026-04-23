@@ -12,8 +12,7 @@ class Root extends HTMLElement{
     this.innerHTML = `
       <div class="header">
         Initial header class
-      </div>
-    `;
-  }
-}
+      </div>`;
+  };
+};
 customElements.define('agario-root', Root);
