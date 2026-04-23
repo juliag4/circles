@@ -5,7 +5,7 @@ style.innerHTML = `
     font-size: 50px;
   }
 `;
-document.body.appendChild(style);
+document.head.appendChild(style);
 
 class Root extends HTMLElement{
   constructor(){
