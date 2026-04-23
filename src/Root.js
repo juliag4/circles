@@ -1,6 +1,6 @@
 let style = document.createElement('style');
 style.innerHTML = `
-  .agario-root .header{
+  agario-root .header{
     color: blue;
     font-size: 50px;
   }
