@@ -1,11 +1,11 @@
-let style = document.createElement('style');
-style.innerHTML = `
-  agario-root .header{
+import {AddStyle} from 'Styles.js';
+
+AddStyle(*/css*/'
+  .circle-root .header{
     color: blue;
     font-size: 50px;
   }
-`;
-document.head.appendChild(style);
+');
 
 class Root extends HTMLElement{
   constructor(){
