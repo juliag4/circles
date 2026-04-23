@@ -16,4 +16,4 @@ class Root extends HTMLElement{
       </div>`;
   };
 };
-customElements.define('agario-root', Root);
+customElements.define('circle-root', Root);
