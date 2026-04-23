@@ -1,6 +1,10 @@
-.root .header{
-  background-color: blue;
-}
+let style = document.createElement('style');
+style.innerHTML = `
+  .root .header{
+    background-color: blue;
+  }
+`;
+document.head.appendChild(style);
 
 class Root extends HTMLElement{
   constructor(){
