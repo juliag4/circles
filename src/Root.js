@@ -1,7 +1,17 @@
 import {AddStyle} from './Styles.js';
 
 AddStyle(`
-  .circle-root .header{
+  circle-root{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    margin: 0;
+    font-family: sans-serif;
+  }
+
+  circle-root .header{
+    display: flex;
     color: blue;
     font-size: 50px;
   }
@@ -12,7 +22,7 @@ class Root extends HTMLElement{
     super();
     this.innerHTML = `
       <div class="header">
-        Initial header class
+        Circles
       </div>`;
   };
 };
