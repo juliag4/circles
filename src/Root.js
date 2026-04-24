@@ -1,4 +1,4 @@
-import {AddStyle} from 'Styles.js';
+import {AddStyle} from '/Styles.js';
 
 AddStyle(`
   .circle-root .header{
