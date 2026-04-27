@@ -72,9 +72,7 @@ class Root extends HTMLElement{
               </div>
           </div>
         `;
-        this.querySelector('.play').addEventListener('click', () => {
-            window.location.href += 'game.html';
-        });
+        this.querySelector('.play').addEventListener('click', () => location.href += 'game.html');
     };
 };
 customElements.define('circle-root', Root);
