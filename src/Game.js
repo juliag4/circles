@@ -43,8 +43,8 @@ class Game extends HTMLElement{
         
         // Redraws the circle every 1000 seconds if the player does not run into the map boundaries
         const drawInterval = setInterval(() => {
-            const playerAlive = this.circlePos.x <= 1460 && this.circlePos.x >= 40 &&
-                            this.circlePos.y <= 1460 && this.circlePos.y >= 40;
+            const playerAlive = this.circlePos.x <= 460 && this.circlePos.x >= 40 &&
+                            this.circlePos.y <= 460 && this.circlePos.y >= 40;
             if(playerAlive){ this.redraw(); }
             else{
                 clearInterval(drawInterval);
