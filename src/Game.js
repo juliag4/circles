@@ -7,9 +7,9 @@ AddStyle(`
 
     circle-game{
         display: flex;
+        font-family: sans-serif;
         width: 100vw;
         height: 100vh;
-        font-family: sans-serif;
     }
 
     canvas{
@@ -25,12 +25,18 @@ class Game extends HTMLElement{
         `;
         
         this.canvas = this.querySelector('canvas');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
         this.ctx = this.canvas.getContext('2d');
         
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        
         this.mousePos = {x: 45, y: 230};
-        this.circlePos = {x: 45, y: 230};
+        // Absolute starting position
+        this.circlePosAbs = {x: 45, y: 230};
+        
+        this.view = {x: 0, y: 0};
+        
+        this.map = {width: 3000, height: 3000};
         
         // Changes mouse position based on mousemove event
         this.canvas.addEventListener('mousemove', (e) => {
@@ -38,59 +44,85 @@ class Game extends HTMLElement{
             this.mousePos.y = e.clientY;
         });
         
-        // Redraws the circle every 1000 seconds if the player does not run into the map boundaries
-        const drawInterval = setInterval(() => {
-            const playerAlive = this.circlePos.x <= (window.innerWidth - 40) && this.circlePos.x >= 40 &&
-                            this.circlePos.y <= (window.innerHeight - 40) && this.circlePos.y >= 40;
-            if(playerAlive){ this.redraw(); }
-            else{
-                clearInterval(drawInterval);
-                location.href = location.href.replace('game.html', '');
-            }
-       }, 30);
+        // Last time game updated
+        this.lastTime = 0;
+        // Interval at which the canvas redraws
+        this.interval = 33;
         
-       // figure out how to switch to request animation frame,
-       // where inside the function it checks if a certain time has
-       // passed.
-       // also maybe set canvas to fixed height/width again
-       // once the actual map creation is done
+        // Circle radius
+        this.radius = 20;
+        // Style for drawing circle border
+        this.ctx.strokeStyle = 'black';
+
+        this.gameUpdate = this.gameUpdate.bind(this);
+        requestAnimationFrame(this.gameUpdate);
     };
     
-    redraw(){
-        // Return if positions are the same
-        if(this.circlePos.x === this.mousePos.x && this.circlePos.y === this.mousePos.y){
-            return;
-        }
+    gameUpdate(currentTime){
+        requestAnimationFrame(this.gameUpdate);
         
-        const radius = 20;
-        const borderWidth = 2;
-        
-        // Clears the circle
-        // Subtracts from the center of the circle and erases based
-        // on its total height/width
-        this.ctx.clearRect(this.circlePos.x - radius - borderWidth, this.circlePos.y - radius - borderWidth, (radius * 2) + (borderWidth * 2), (radius * 2) + (borderWidth * 2));
+        const elapsed = currentTime - this.lastTime;
 
+        if(elapsed > this.interval){
+            this.lastTime = currentTime - (elapsed % this.interval);
+            
+            const playerAlive = this.circlePosAbs.x <= (this.map.width - 40) && this.circlePosAbs.x >= 40 && this.circlePosAbs.y <= (this.map.height - 40) && this.circlePosAbs.y >= 40;
+            if(!playerAlive){
+                location.href = location.href.replace('game.html', '');
+                return;
+            }
+            this.calculateMoves();
+            this.redraw();
+        }
+    };
+    
+    calculateMoves(){
+        // Previous view position
+        const prevViewX = this.view.x;
+        const prevViewY = this.view.y;
         // Calculates how far to move the circle
-        const xDiff = this.mousePos.x - this.circlePos.x;
-        const yDiff = this.mousePos.y - this.circlePos.y;
+        const xDiff = this.mousePos.x - (this.circlePosAbs.x - this.view.x);
+        const yDiff = this.mousePos.y - (this.circlePosAbs.y - this.view.y);
         
         const maxSpeed = 3;
         
         const changeX = xDiff <= 0 ? Math.max(xDiff, -maxSpeed) : Math.min(xDiff, maxSpeed);
         const changeY = yDiff <= 0 ? Math.max(yDiff, -maxSpeed) : Math.min(yDiff, maxSpeed);
         
-        this.circlePos.x += changeX;
-        this.circlePos.y += changeY;
+        this.circlePosAbs.x += changeX;
+        this.circlePosAbs.y += changeY;
+      
+        this.view.x = this.circlePosAbs.x - this.canvas.width / 2;
+        this.view.y = this.circlePosAbs.y - this.canvas.height / 2;
+        
+        // Check to ensure that view x and y aren't outside of of canvas boundaries
+        this.view.x = Math.max(0, Math.min(this.view.x, this.map.width - this.canvas.width));
+        this.view.y = Math.max(0, Math.min(this.view.y, this.map.height - this.canvas.height));
+        
+        // Undo the transform
+        this.ctx.resetTransform();
+        
+        this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        
+        // Move the view window
+        this.ctx.translate(-this.view.x, -this.view.y);
+    }
+    
+    redraw(){
+        this.ctx.fillStyle = 'lightblue';
+        this.ctx.fillRect(this.view.x, this.view.y, window.innerWidth, window.innerHeight);
         
         // Styling of the circle itself
         this.ctx.beginPath();
-        this.ctx.arc(this.circlePos.x, this.circlePos.y, radius, 0, 2 * Math.PI);
+        this.ctx.arc(this.circlePosAbs.x, this.circlePosAbs.y, this.radius, 0, 2 * Math.PI);
         this.ctx.fillStyle = 'purple';
         this.ctx.fill();
-        this.ctx.lineWidth = borderWidth;
-        this.ctx.strokeStyle = 'black';
+        this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
-    };
+    }
 };
 customElements.define('circle-game', Game);
