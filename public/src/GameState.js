@@ -1,3 +1,5 @@
+import Player from './Player.js';
+
 class GameState{
     constructor(){
         this.mapWidth = 3000;
@@ -5,18 +7,28 @@ class GameState{
         this.initialPlayerRadius = 20;
 
         this.players = {};
+        this.foodCollection = {};
     };
     
     addPlayer(id){
-        this.players[String(id)] = {
-            xPos: Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius,
-            yPos: Math.floor(Math.random() * ((this.mapHeight - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius,
-            radius: this.initialPlayerRadius
-        };
+        const xPos = Math.floor(Math.random() * ((this.mapWidth - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
+        const yPos = Math.floor(Math.random() * ((this.mapHeight - this.initialPlayerRadius) - this.initialPlayerRadius)) + this.initialPlayerRadius;
+        const color = this.getRandomRGB();
+
+        this.players[String(id)] = new Player(String(id), xPos, yPos, this.initialPlayerRadius, color);
     }
     
     deletePlayer(id){
         delete this.players[String(id)];
     }
+    
+    getRandomRGB() {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    
+    // TODO: collision checking
 };
 module.exports = GameState;

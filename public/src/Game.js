@@ -114,7 +114,7 @@ export default class Game extends HTMLElement{
         
         // Move the view window
         this.ctx.translate(-this.view.x, -this.view.y);
-    }
+    };
     
     redrawPlayer(){
         this.ctx.fillStyle = 'lightblue';
@@ -128,6 +128,6 @@ export default class Game extends HTMLElement{
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
-    }
+    };
 };
 customElements.define('circle-game', Game);

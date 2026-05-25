@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 let room = '';
-let game = null;
+let gamestate = null;
 
 // Handle a socket connection request from web client
 const connections = [null, null, null, null, null, null, null, null];
@@ -44,12 +44,23 @@ io.on('connection', socket => {
     socket.on('join', (roomId) => {
         socket.join('Room 1');
         if(!game){
-            game = new GameState();
+            gamestate = new GameState();
         }
-        game.addPlayer(socket.id);
+        console.log(socket.id);
+        gamestate.addPlayer(socket.id);
+    });
+    
+    socket.on('mouseMove', (mouseData) => {
+        if(gamestate.players[socket.id]){
+          gamestate.players[socket.id].calculateMoves(mouseData.x, mouseData.y);
+        }
+    });
+
+    socket.on('disconnect', () => {
+        gamestate.deletePlayer(socket.id);
     });
 });
 
 setInterval(() => {
-  io.emit('state', game);
+    io.emit('state', {players: gamestate.players, food: gamestate.foodCollection});
 }, 1000);

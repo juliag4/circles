@@ -65,18 +65,19 @@ class Root extends HTMLElement{
     constructor(){
         super();
         this.innerHTML = `
-          <div class="name-input-view">
-              <div class="header">Circles</div>
-              <div class="input-button-container">
-                  <input class="username input-button" placeholder="Name" spellcheck="false"></input>
-                  <button class="single-play input-button">Single Player Mode</button>
-                   <button class="multi-play input-button">Multi Player Mode</button>
-              </div>
-          </div>
+            <div class="name-input-view">
+                <div class="header">Circles</div>
+                <div class="input-button-container">
+                    <input class="username input-button" placeholder="Name" spellcheck="false"></input>
+                    <button class="single-player input-button">Single Player Mode</button>
+                    <button class="multi-player input-button">Multi Player Mode</button>
+                </div>
+            </div>
         `;
-        this.querySelector('.single-play').addEventListener('click', () => location.href += 'game.html');
         
-        this.querySelector('.multi-play').addEventListener('click', () => {
+        this.querySelector('.single-player').addEventListener('click', () => location.href += 'game.html');
+        
+        this.querySelector('.multi-player').addEventListener('click', () => {
             let gameMode = 'multiPlayer';
             let playerNum = 0;
             const socket = io();
@@ -97,8 +98,9 @@ class Root extends HTMLElement{
                 console.log(`Player number ${num} has connected or disconnected`);
             });
             
-            socket.on('state', game => {
-               console.log(game);
+            socket.on('state', (players, food) => {
+               console.log(players);
+               console.log(food);
             });
         });
         
